@@ -12,6 +12,10 @@ HISTORY_FILE = DATA_DIR / "history.json"
 def load_items():
     with open(ITEMS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
+    
+def save_items(items):
+    with open(ITEMS_FILE, "w", encoding="utf-8") as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
 
 
 def load_history():
@@ -49,13 +53,13 @@ def weighted_draw(items):
 
 def ask_status():
     print("\nどうする？")
-    print("[a] 採用 / [h] 保留 / [s] スキップ / [n] 記録しない")
+    print("[a] 採用 / [x] 採用して消す / [h] 保留 / [s] スキップ / [n] 記録しない")
 
     while True:
         choice = input("> ").strip().lower()
-        if choice in ["a", "h", "s", "n"]:
+        if choice in ["a", "x", "h", "s", "n"]:
             return choice
-        print("無効な入力。a/h/s/n のどれかを入力してね")
+        print("無効な入力。a/x/h/s/n のどれかを入力してね")
 
 
 def main():
@@ -93,6 +97,7 @@ def main():
 
     status_map = {
         "a": "accepted",
+        "x": "accepted_and_removed",
         "h": "hold",
         "s": "skipped"
     }
@@ -113,6 +118,11 @@ def main():
     save_history(history)
 
     print(f"記録しました: {entry['status']}")
+    
+    if choice == "x":
+        items = [item for item in items if item["name"] != result_item["name"]]
+        save_items(items)
+        print("items.json からも削除しました")
 
 
 if __name__ == "__main__":
