@@ -26,12 +26,12 @@ EXCLUDED_CATEGORY_PREFIXES = (
 )
 
 EXCLUDED_CATEGORY_NAMES = {
-    "カテゴリ:設定所属識別済み",
-    "カテゴリ:七本柱識別済み",
-    "カテゴリ:3000バイト超えの記事",
-    "カテゴリ:曖昧さ回避",
-    "カテゴリ:メタ",
-    "カテゴリ:Walkerpediaのメタ"
+    "設定所属識別済み",
+    "七本柱識別済み",
+    "3000バイト超えの記事",
+    "曖昧さ回避",
+    "メタ",
+    "Walkerpediaのメタ"
 }
 
 
@@ -61,6 +61,8 @@ def calc_weight(categories: List[str]) -> int:
     category_text = ",".join(categories)
     return max(1, len(category_text.encode("utf-8")))
 
+def normalize_category(category_title: str) -> str:
+    return category_title.removeprefix("カテゴリ:").strip()
 
 def get_with_retry(session: requests.Session, params: Dict[str, Any]) -> Dict[str, Any]:
     for attempt in range(1, MAX_RETRIES + 1):
@@ -157,7 +159,7 @@ def fetch_categories_for_title(session: requests.Session, title: str) -> List[st
 
             for cat in raw_categories:
                 cat_title = cat.get("title", "")
-                cat_name = strip_category_prefix(cat_title).strip()
+                cat_name = normalize_category(cat_title)
                 if not cat_name:
                     continue
                 if should_skip_category(cat_name):
