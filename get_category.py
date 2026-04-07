@@ -28,7 +28,6 @@ EXCLUDED_CATEGORY_PREFIXES = (
 EXCLUDED_CATEGORY_NAMES = {
     "設定所属識別済み",
     "七本柱識別済み",
-    "3000バイト超えの記事",
     "曖昧さ回避",
     "メタ",
     "Walkerpediaのメタ"
